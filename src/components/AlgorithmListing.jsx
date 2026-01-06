@@ -24,7 +24,7 @@ const AlgorithmListing = ({algorithm}) => {
         </button>
         <div className='border-b border-color-gray-600 mb-5'></div>
         <div className='flex justify-end'>
-          <Link to='/practice.html' className='bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm'>
+          <Link to={`/practice-${algorithm.linkName}`} className='bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm'>
             practice
           </Link>
         </div>

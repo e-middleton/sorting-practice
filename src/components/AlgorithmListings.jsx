@@ -1,8 +1,8 @@
 import algorithms from '../algorithms.json';
 import AlgorithmListing from './AlgorithmListing';
 
-const AlgorithmListings = () => {
-  const algs = algorithms.slice(0,3);
+const AlgorithmListings = ({homePage = false}) => {
+  const algs = homePage ? algorithms.slice(0,3) : algorithms;
 
   return (
     <>

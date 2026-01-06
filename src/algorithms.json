@@ -2,30 +2,35 @@
   {
     "id": "1",
     "name": "Selection Sort",
+    "linkName": "SelectionSort",
     "description": "During each scan of the unsorted elements in the array. Select the smallest value and add it to the sorted section.",
     "complexity": "O(n^2) - quadratic time"
   },
   {
     "id": "2",
-    "name": "Heap Sort",
+    "name": "Heap-Sort",
+    "linkName": "HeapSort",
     "description": "Add elements one by one to the heap section of the array. Then remove the root of the heap and add it to the sorted section before reheapifying.",
     "complexity": "O(nlog(n)) - log-linear time"
   },
   {
     "id": "3",
-    "name": "Insertion Sort",
+    "name": "Insertion-Sort",
+    "linkName": "InsertionSort",
     "description": "Select an arbitrary element from the unsorted section of the array and search through the sorted portion to determine where to add the element.",
     "complexity": "O(n^2) - quadratic time"
   },
   {
     "id": "4",
     "name": "QuickSort",
+    "linkName": "QuickSort",
     "description": "Choose a pivot and recursively sort the elements into two lists as smaller than pivot or larger than pivot.",
     "complexity": "O(nlog(n)) - log-linear time"
   },
   {
     "id": "5",
     "name": "Merge Sort",
+    "linkName": "MergeSort",
     "description": "Description of Merge Sort.",
     "complexity": "O(nlog(n)) - log-linear time"
   }

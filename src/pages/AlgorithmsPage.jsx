@@ -1,4 +1,10 @@
+import AlgorithmListings from "../components/AlgorithmListings";
+
 const AlgorithmsPage = () => {
-  return <div>Algs</div>;
+  return (
+    <>
+      <AlgorithmListings/>
+    </>
+  );
 };
 export default AlgorithmsPage;
