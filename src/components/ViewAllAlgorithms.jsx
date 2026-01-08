@@ -6,7 +6,7 @@ const ViewAllAlgorithms = () => {
       <Link 
         to='/algorithms'
         className='flex items-center justify-center block h-15 bg-black px-6 rounded-xl hover:bg-gray-700'>
-        <span className='text-white text-bold text-center'>View All Algorithms</span>
+        <span className='font-roboto text-white text-bold text-lg text-center'>View All Algorithms</span>
       </Link>
     </section>
   );
