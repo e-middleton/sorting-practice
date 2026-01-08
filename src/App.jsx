@@ -1,4 +1,4 @@
-import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom';
+import {Route, createHashRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import AlgorithmsPage from './pages/AlgorithmsPage';
@@ -6,7 +6,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import SelectionSortPage from './pages/SelectionSortPage';
 import HeapSortPage from './pages/HeapSortPage';
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   createRoutesFromElements(
     <Route path='/' element={<MainLayout />} >
       <Route index element={<HomePage />}/>
