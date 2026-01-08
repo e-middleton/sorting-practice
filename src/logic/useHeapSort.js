@@ -1,101 +1,108 @@
-import {useState, useEffect} from 'react';
+import { useReducer } from 'react';
+
 
 export function useHeapSort(arrayLength=6) {
-
   const PHASE = {
     BUILD: "BUILD",
     SORT: "SORT"
   };
 
-
-  /**
-   * function to create a randomized array of integers given a length
-   * @param numVals number of values in the array
-   * @returns a randomized array
-   */
-  const randomizedArray = (numVals) => {
-    const randomArray = [];
-    for (let i = 0; i < numVals; i++) {
-      randomArray[i] = Math.floor(Math.random() * 60 + 1); // gives an integer from 1 - 60
-    }
-    return randomArray;
+  // ALL AVAILABLE ACTIONS
+  const ACTION = {
+    PUSH_TO_HEAP: "PUSH_TO_HEAP",
+    SWAP: "SWAP",
+    FORCE_SWAP: "FORCE_SWAP",
+    UNLOCK: "UNLOCK",
+    SET_DRAG_START: "SET_DRAG_START",
+    POP_ROOT: "POP_ROOT",
+    CHECK_PHASE: "CHECK_PHASE"
   }
 
-  // let dragStartIndex; // will change
-  // let sortedElem = 0; // how many elements are sorted
-  const [arrayValues, setArrayValues] = useState(() => {return randomizedArray(arrayLength);});
-  const [heapValues, setHeapValues] = useState([]);
-  const [swappedItems, setSwappedItems] = useState([]); // parent and child index last swapped
-  const [locked, setLocked] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [phase, setPhase] = useState(PHASE.BUILD);
-  const [dragStartIndex, setDragStartIndex] = useState(null);
+  // INITIAL VALUES FOR THE ARRAY / DEPENDENCIES
+  const initialState = (arrayLength) => ({
+    phase: PHASE.BUILD,
 
-  useEffect(() => {
-    if (heapValues.length === arrayLength && (swappedItems.length === 0)) {
-      setPhase(PHASE.SORT);
-      console.log('setting phase 2');
-    }
-  }, [heapValues.length, arrayLength]);
+    arrayValues: randomizedArray(arrayLength),
+    heapValues: [],
 
-  const heapTable = prepHeap(heapValues.concat(arrayValues));
+    locked: false,
+    swappedItems: [],
+    dragStartIndex: null,
 
-  function heapify() {
-    // use first arrayValues because useState is asynchronous and only updates on next render (?)
-    let equal;
-    let tempHeap;
-    const endIndex = findEnd(heapTable[currentIndex]);
-    // if the last move was NOT an enforced swap
-    // it means there has not been a rerender, and heapValues doesn't include latest update, so needs arrayValues[0]
-    if (heapValues.length === currentIndex) {
-      equal = arrayComp(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
-    } else {
-      tempHeap = structuredClone(heapValues);
-      const tempVal = tempHeap[swappedItems[0]];
-      tempHeap[swappedItems[0]] = tempHeap[swappedItems[1]]; // swap current index with parent val
-      tempHeap[swappedItems[1]] = tempVal;
-      equal = arrayComp(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
-    }
-    
-    let wrongIndices;
-    if (!equal) {
-      if (tempHeap) {
-        wrongIndices = findWrongIndices(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
-        setSwappedItems(wrongIndices);
-      } else {
-        wrongIndices = findWrongIndices(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
-        setSwappedItems(wrongIndices);
+    arrayLength
+  });
+
+  function heapReducer(state, action) {
+    switch (action.type) {
+
+      case ACTION.PUSH_TO_HEAP: {
+        const value = state.arrayValues[0]; // the leftmost array value
+
+        const newHeap = [...state.heapValues, value]; // add onto the heap array
+        const newArray = state.arrayValues.slice(1); // slices from the first element onwards
+
+        // spread operator to keep old values
+        return {
+          ...state,
+          heapValues: newHeap,
+          arrayValues: newArray,
+        };
       }
-      setLocked(val => !val);
-    } else {
-      setCurrentIndex(index => index+1);
-    }
 
-    // if (heapValues.length === arrayLength) {
-    //   if (!wrongIndices) { // if not initialized, then no swaps were needed
-    //      setStageTwo(true);
-    //   }
-    // }
-  }
+      case ACTION.FORCE_SWAP: 
+        return {
+          ...state,
+          swappedItems: action.swapItems,
+          locked: true
+        };
+      
+      case ACTION.SWAP: {
+        const { from, to } = action;
 
-  function arrayComp(arr1, arr2) {
-    let equality = true;
-    for(let i = 0; i < arr1.length; i++) { // they should always be the same length, so no check for length
-      if (arr1[i] !== arr2[i]) {
-        equality = false;
+        const heap = [...state.heapValues];
+        [heap[from], heap[to]] = [heap[to], heap[from]];
+
+        return {
+          ...state,
+          heapValues: heap,
+          swappedItems: [],
+          locked: false,
+          dragStartIndex: null,
+        };
       }
-    }
-    return equality;
-  }
 
-  function findEnd(arr) {
-    let index = 0;
-    for(let i = 0; i < arr.length; i++) {
-      if (arr[i]) { // as long as values are not null, index will update
-        index = i;
+      case ACTION.SET_DRAG_START:
+        return {
+          ...state,
+          dragStartIndex: action.index
+        };
+
+      case ACTION.POP_ROOT: {
+        const [root, ...rest] = state.heapValues;
+
+        return {
+          ...state,
+          heapValues: rest,
+          arrayValues: [root, ...state.arrayValues]
+        };
       }
+
+      case ACTION.CHECK_PHASE: {
+        const correctLength = state.heapValues.length === state.arrayLength;
+        const correctOrder = state.swappedItems.length === 0;
+        
+        return {
+          ...state,
+          phase:
+            correctLength && correctOrder
+            ? PHASE.SORT
+            : state.phase
+        }
+      }
+  
+      default:
+        return state;
     }
-    return index;
   }
 
   /**
@@ -116,150 +123,302 @@ export function useHeapSort(arrayLength=6) {
     return wrongIndices;
   }
 
-  function doubleClick(index) {
-    if (index !== 0) {
-      return;
-    }
-
-    if (phase===PHASE.BUILD && !locked) {
-      setHeapValues(heap => {
-        const copy = [...heap];
-        copy.push(arrayValues[0]);
-        return copy;
-      })
-
-      // remove item from array values
-      setArrayValues(v => {
-        const copy = [...v];
-        copy.splice(0, 1);
-        return copy;
-      })
-      heapify();
-    }
-  }
-
-  function reheapify(arr) {
-    arr.splice(0,1); // ignore first val
-    const reHeapTable = prepHeap(arr);
-    const correctRow = reHeapTable[arr.length-1];
-    let equal = arrayComp(arr, correctRow);
-    if (equal) {
-      return;
-    } else {
-      let wrongIndices = findWrongIndices(arr, correctRow);
-      setSwappedItems(wrongIndices);
-    }
-  }
-
   /**
-   * function to drop an element of the array that has been dragged
-   * @param toIndex the ending index where it is being placed
+   * assumes that all values except the most recently added (last index)
+   * are a correct heap
+   * @param arr the input array
    */
-  function drop(toIndex) {
-    console.log('drag')
-    if (!locked || dragStartIndex === null) { // if locked is not true, don't allow dragged items to drop
-      return; 
-    }
-    if (dragStartIndex === toIndex) {
-      return;
-    }
-    if (swappedItems.includes(dragStartIndex) && swappedItems.includes(toIndex)){
-      console.log('valid swap')
-      swap(dragStartIndex, toIndex);
-      setSwappedItems([]);
-      setLocked(false);
-      if (phase===PHASE.BUILD) {
-        heapify();
-      } else {
-        reheapify();
-      }
-    }
-  
-    setDragStartIndex(null);
-  };
-
-  function swap(from, to) {
-    setHeapValues(v => {
-      const copy = [...v];
-      [copy[from], copy[to]] = [copy[to], copy[from]];
-      return copy;
-    });
-  };
-
-  function doubleClickTwo(itemIndex) {
-    console.log(`stage 2 ${phase}`);
-    if (phase===PHASE.SORT) { // either stage 2 or the array is empty with no swaps needed
-      if (itemIndex===0) { // only allowed on the root of the heap
-        setArrayValues(v => {
-          const copy = [heapValues[0]].concat([...v]);
-          return copy;
-        });
-        setHeapValues(heap => {
-        const copy = [...heap];
-        copy.splice(0,1);
-        return copy;
-        });
-        reheapify(structuredClone(heapValues));
-      }
-    }
-  }
-
-  return {
-    arrayValues,
-    heapValues,
-    swappedItems,
-    doubleClick,
-    doubleClickTwo,
-    setDragStartIndex,
-    drop
-  };
-};
-
-
-
-
-function prepHeap(initialValues) {
-  const heapTable = createHeapTable(initialValues.length, initialValues.length);
-
-  // create a table of heaps for each added index element
-  function createHeapTable(rows, columns, defaultValue = null) {
-    const arr = new Array(rows);
-    for (let i = 0; i < rows; i++) {
-      arr[i] = new Array(columns).fill(defaultValue);
-    }
-    fillHeapTable(arr);
-    return arr;
-  }
-
-  function fillHeapTable(arr){
-    for (let i = 0; i < arr.length; i++) {
-      for(let j = 0; j < i+1; j++) {
-        if (j < i) {
-          arr[i][j] = arr[i-1][j];
-        } else {
-          arr[i][j] = initialValues[j];
-        }
-      }
-      heapify(i, arr);
-    }
-    return arr;
-  }
-
-  function heapify(row, table) {
-    let index = row; // index of last added 
+  function findHeap(arr) {
+    let index = arr.length-1; // index of last added 
     let parentIndex = Math.floor((index-1)/2);
 
     // compare with parent and swap if needed
     while (parentIndex >= 0) {
       parentIndex = Math.floor((index-1)/2);
-      if (table[row][parentIndex] < table[row][index]) {
-        let temp = table[row][parentIndex];
-        table[row][parentIndex] = table[row][index];
-        table[row][index] = temp;
+      if (arr[parentIndex] < arr[index]) {
+        let temp = arr[parentIndex];
+        arr[parentIndex] = arr[index];
+        arr[index] = temp;
       }
       index = parentIndex;
     }
-    return table;
+    return arr;
+  };
+
+  /**
+   * finds the correct heap when the last 
+   * action was removal of the root element
+   * @param arr the heap being checked
+   */
+  function findHeapTwo(arr) {
+    let index = 0;
+    while (index < arr.length) {
+      let lChild = index*2 + 1;
+      let rChild = index*2 + 2;
+      let lVal;
+      let rVal;
+      if (lChild < arr.length) {
+        if (arr[lChild] > arr[index]) lVal = arr[lChild];
+      } 
+      if (rChild < arr.length) {
+        if (arr[rChild] > arr[index]) rVal = arr[rChild];
+      }
+      if (lVal && rVal) { // if both exist, choose the larger for the swap
+        if (lVal > rVal) {
+          rVal = null;
+        } else {
+          lVal = null;
+        }
+      } 
+      if (rVal) {
+        let temp = arr[index];
+        arr[index] = rVal;
+        arr[rChild] = temp;
+        index = rChild;
+      } else if (lVal) {
+        let temp = arr[index];
+        arr[index] = lVal;
+        arr[lChild] = temp;
+        index = lChild;
+      } else {
+        index = index+1; // continue down
+      }
+    }
+    return arr;
   }
-  return heapTable;
-}
+
+  /**
+   * function to create a randomized array of integers given a length
+   * @param numVals number of values in the array
+   * @returns a randomized array
+   */
+  const randomizedArray = (numVals) => {
+    const randomArray = [];
+    for (let i = 0; i < numVals; i++) {
+      randomArray[i] = Math.floor(Math.random() * 60 + 1); // gives an integer from 1 - 60
+    }
+    return randomArray;
+  }
+
+  const [state, dispatch] = useReducer(heapReducer, arrayLength, initialState);
+
+  function doubleClick(index) {
+    if (index !== 0) return;
+
+    if (state.phase !== PHASE.BUILD || state.locked) return;
+
+    const nextHeap = [...state.heapValues, state.arrayValues[0]];
+    dispatch({type : ACTION.PUSH_TO_HEAP}); 
+
+    checkHeap(nextHeap);
+    dispatch({type : ACTION.CHECK_PHASE})
+  }
+
+  function drop(toIndex) {
+    const from = state.dragStartIndex;
+    if (from === null || !state.locked) return;
+    if (from === toIndex) return; // picking up and dropping shouldn't have any impact
+    if (
+      state.swappedItems.includes(from) &&
+      state.swappedItems.includes(toIndex)
+    ) {
+      dispatch({ type: ACTION.SWAP, from, to: toIndex });
+    }
+    // pretend the swap happened
+    const heap = structuredClone(state.heapValues);
+    [heap[from], heap[toIndex]] = [heap[toIndex], heap[from]];
+
+    checkHeap(heap);
+    dispatch({type : ACTION.CHECK_PHASE})
+  }
+
+  function doubleClickTwo(index) {
+    if (state.phase !== PHASE.SORT || state.locked) return;
+    if (index !== 0) return;
+
+    const newHeap = structuredClone(state.heapValues);
+    newHeap.splice(0,1);
+    dispatch({ type: ACTION.POP_ROOT });
+    checkHeapTwo(newHeap);
+  }
+
+  function checkHeap(arr) {
+    const correctHeap = findHeap(structuredClone(arr));
+    const swapItems = findWrongIndices(arr, correctHeap);
+
+    if (swapItems.length > 0) {
+      dispatch({
+        type: ACTION.FORCE_SWAP,
+        swapItems
+      });
+    }
+  }
+
+  function checkHeapTwo(arr) {
+    const correctHeap = findHeapTwo(structuredClone(arr)); // different way of checking the heap because of root
+    const swapItems = findWrongIndices(arr, correctHeap);
+
+    if (swapItems.length > 0) {
+      dispatch({
+        type: ACTION.FORCE_SWAP,
+        swapItems
+      });
+    }
+  }
+
+   return {
+    state,
+    doubleClick,
+    doubleClickTwo,
+    setDragStartIndex: (i) =>
+      dispatch({ type: ACTION.SET_DRAG_START, index: i }),
+    drop
+  };
+};
+  
+  // const heapTable = prepHeap(heapValues.concat(arrayValues));
+
+  // function heapify() {
+  //   // use first arrayValues because useState is asynchronous and only updates on next render (?)
+  //   let equal;
+  //   let tempHeap;
+  //   const endIndex = findEnd(heapTable[currentIndex]);
+  //   // if the last move was NOT an enforced swap
+  //   // it means there has not been a rerender, and heapValues doesn't include latest update, so needs arrayValues[0]
+  //   if (heapValues.length === currentIndex) {
+  //     equal = arrayComp(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
+  //   } else {
+  //     tempHeap = structuredClone(heapValues);
+  //     const tempVal = tempHeap[swappedItems[0]];
+  //     tempHeap[swappedItems[0]] = tempHeap[swappedItems[1]]; // swap current index with parent val
+  //     tempHeap[swappedItems[1]] = tempVal;
+  //     equal = arrayComp(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
+  //   }
+    
+  //   let wrongIndices;
+  //   if (!equal) {
+  //     if (tempHeap) {
+  //       wrongIndices = findWrongIndices(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
+  //       setSwappedItems(wrongIndices);
+  //     } else {
+  //       wrongIndices = findWrongIndices(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
+  //       setSwappedItems(wrongIndices);
+  //     }
+  //     setLocked(val => !val);
+  //   } else {
+  //     setCurrentIndex(index => index+1);
+  //   }
+
+  //   // if (heapValues.length === arrayLength) {
+  //   //   if (!wrongIndices) { // if not initialized, then no swaps were needed
+  //   //      setStageTwo(true);
+  //   //   }
+  //   // }
+  // }
+
+  
+
+  // function findEnd(arr) {
+  //   let index = 0;
+  //   for(let i = 0; i < arr.length; i++) {
+  //     if (arr[i]) { // as long as values are not null, index will update
+  //       index = i;
+  //     }
+  //   }
+  //   return index;
+  // }
+
+
+  
+
+  // function reheapify(arr) {
+  //   arr.splice(0,1); // ignore first val
+  //   const reHeapTable = prepHeap(arr);
+  //   const correctRow = reHeapTable[arr.length-1];
+  //   let equal = arrayComp(arr, correctRow);
+  //   if (equal) {
+  //     return;
+  //   } else {
+  //     let wrongIndices = findWrongIndices(arr, correctRow);
+  //     setSwappedItems(wrongIndices);
+  //   }
+  // }
+
+  
+
+  // function doubleClickTwo(itemIndex) {
+  //   console.log(`stage 2 ${phase}`);
+  //   if (phase===PHASE.SORT) { // either stage 2 or the array is empty with no swaps needed
+  //     if (itemIndex===0) { // only allowed on the root of the heap
+  //       setArrayValues(v => {
+  //         const copy = [heapValues[0]].concat([...v]);
+  //         return copy;
+  //       });
+  //       setHeapValues(heap => {
+  //       const copy = [...heap];
+  //       copy.splice(0,1);
+  //       return copy;
+  //       });
+  //       reheapify(structuredClone(heapValues));
+  //     }
+  //   }
+  // }
+
+  // return {
+  //   arrayValues,
+  //   heapValues,
+  //   swappedItems,
+  //   doubleClick,
+  //   doubleClickTwo,
+  //   setDragStartIndex,
+  //   drop
+  // };
+
+
+
+
+// function prepHeap(initialValues) {
+//   const heapTable = createHeapTable(initialValues.length, initialValues.length);
+
+//   // create a table of heaps for each added index element
+//   function createHeapTable(rows, columns, defaultValue = null) {
+//     const arr = new Array(rows);
+//     for (let i = 0; i < rows; i++) {
+//       arr[i] = new Array(columns).fill(defaultValue);
+//     }
+//     fillHeapTable(arr);
+//     return arr;
+//   }
+
+//   function fillHeapTable(arr){
+//     for (let i = 0; i < arr.length; i++) {
+//       for(let j = 0; j < i+1; j++) {
+//         if (j < i) {
+//           arr[i][j] = arr[i-1][j];
+//         } else {
+//           arr[i][j] = initialValues[j];
+//         }
+//       }
+//       heapify(i, arr);
+//     }
+//     return arr;
+//   }
+
+//   function heapify(row, table) {
+//     let index = row; // index of last added 
+//     let parentIndex = Math.floor((index-1)/2);
+
+//     // compare with parent and swap if needed
+//     while (parentIndex >= 0) {
+//       parentIndex = Math.floor((index-1)/2);
+//       if (table[row][parentIndex] < table[row][index]) {
+//         let temp = table[row][parentIndex];
+//         table[row][parentIndex] = table[row][index];
+//         table[row][index] = temp;
+//       }
+//       index = parentIndex;
+//     }
+//     return table;
+//   }
+//   return heapTable;
+// }

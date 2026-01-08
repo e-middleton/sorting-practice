@@ -2,14 +2,14 @@ import { useHeapSort } from "../logic/useHeapSort";
 
 const HSGameBoard = () => {
   const {
-    arrayValues,
-    heapValues,
-    swappedItems,
+    state,
     doubleClick,
     doubleClickTwo,
     setDragStartIndex,
-    drop,
-  } = useHeapSort();
+    drop
+  } = useHeapSort(6);
+
+  const {arrayValues, heapValues, swappedItems} = state;
 
   return (
     <>
