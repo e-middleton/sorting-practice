@@ -79,7 +79,12 @@ export function useHeapSort(arrayLength=6) {
 
       case ACTION.POP_ROOT: {
         const [root, ...rest] = state.heapValues;
-
+        if (rest.length !== 0) {
+          const newRoot = state.heapValues[state.heapValues.length-1];
+          rest.splice(rest.length-1, 1);
+          rest.splice(0,0,newRoot);
+        }
+        
         return {
           ...state,
           heapValues: rest,
@@ -118,7 +123,11 @@ export function useHeapSort(arrayLength=6) {
       }
     }
     if (wrongIndices.length > 2) {
-      wrongIndices.splice(0, wrongIndices.length-2);
+      if (state.phase===PHASE.BUILD) {
+        wrongIndices.splice(0, wrongIndices.length-2);
+      } else {
+        wrongIndices.splice(2);
+      }
     }
     return wrongIndices;
   }
@@ -237,7 +246,10 @@ export function useHeapSort(arrayLength=6) {
     if (index !== 0) return;
 
     const newHeap = structuredClone(state.heapValues);
-    newHeap.splice(0,1);
+    const newRoot = newHeap[newHeap.length-1];
+    newHeap.splice(0,1,newRoot);
+    newHeap.splice(newHeap.length-1, 1);
+    
     dispatch({ type: ACTION.POP_ROOT });
     checkHeapTwo(newHeap);
   }
@@ -275,150 +287,3 @@ export function useHeapSort(arrayLength=6) {
     drop
   };
 };
-  
-  // const heapTable = prepHeap(heapValues.concat(arrayValues));
-
-  // function heapify() {
-  //   // use first arrayValues because useState is asynchronous and only updates on next render (?)
-  //   let equal;
-  //   let tempHeap;
-  //   const endIndex = findEnd(heapTable[currentIndex]);
-  //   // if the last move was NOT an enforced swap
-  //   // it means there has not been a rerender, and heapValues doesn't include latest update, so needs arrayValues[0]
-  //   if (heapValues.length === currentIndex) {
-  //     equal = arrayComp(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
-  //   } else {
-  //     tempHeap = structuredClone(heapValues);
-  //     const tempVal = tempHeap[swappedItems[0]];
-  //     tempHeap[swappedItems[0]] = tempHeap[swappedItems[1]]; // swap current index with parent val
-  //     tempHeap[swappedItems[1]] = tempVal;
-  //     equal = arrayComp(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
-  //   }
-    
-  //   let wrongIndices;
-  //   if (!equal) {
-  //     if (tempHeap) {
-  //       wrongIndices = findWrongIndices(tempHeap, heapTable[currentIndex].slice(0, endIndex+1));
-  //       setSwappedItems(wrongIndices);
-  //     } else {
-  //       wrongIndices = findWrongIndices(heapValues.concat(arrayValues[0]), heapTable[currentIndex].slice(0, endIndex+1));
-  //       setSwappedItems(wrongIndices);
-  //     }
-  //     setLocked(val => !val);
-  //   } else {
-  //     setCurrentIndex(index => index+1);
-  //   }
-
-  //   // if (heapValues.length === arrayLength) {
-  //   //   if (!wrongIndices) { // if not initialized, then no swaps were needed
-  //   //      setStageTwo(true);
-  //   //   }
-  //   // }
-  // }
-
-  
-
-  // function findEnd(arr) {
-  //   let index = 0;
-  //   for(let i = 0; i < arr.length; i++) {
-  //     if (arr[i]) { // as long as values are not null, index will update
-  //       index = i;
-  //     }
-  //   }
-  //   return index;
-  // }
-
-
-  
-
-  // function reheapify(arr) {
-  //   arr.splice(0,1); // ignore first val
-  //   const reHeapTable = prepHeap(arr);
-  //   const correctRow = reHeapTable[arr.length-1];
-  //   let equal = arrayComp(arr, correctRow);
-  //   if (equal) {
-  //     return;
-  //   } else {
-  //     let wrongIndices = findWrongIndices(arr, correctRow);
-  //     setSwappedItems(wrongIndices);
-  //   }
-  // }
-
-  
-
-  // function doubleClickTwo(itemIndex) {
-  //   console.log(`stage 2 ${phase}`);
-  //   if (phase===PHASE.SORT) { // either stage 2 or the array is empty with no swaps needed
-  //     if (itemIndex===0) { // only allowed on the root of the heap
-  //       setArrayValues(v => {
-  //         const copy = [heapValues[0]].concat([...v]);
-  //         return copy;
-  //       });
-  //       setHeapValues(heap => {
-  //       const copy = [...heap];
-  //       copy.splice(0,1);
-  //       return copy;
-  //       });
-  //       reheapify(structuredClone(heapValues));
-  //     }
-  //   }
-  // }
-
-  // return {
-  //   arrayValues,
-  //   heapValues,
-  //   swappedItems,
-  //   doubleClick,
-  //   doubleClickTwo,
-  //   setDragStartIndex,
-  //   drop
-  // };
-
-
-
-
-// function prepHeap(initialValues) {
-//   const heapTable = createHeapTable(initialValues.length, initialValues.length);
-
-//   // create a table of heaps for each added index element
-//   function createHeapTable(rows, columns, defaultValue = null) {
-//     const arr = new Array(rows);
-//     for (let i = 0; i < rows; i++) {
-//       arr[i] = new Array(columns).fill(defaultValue);
-//     }
-//     fillHeapTable(arr);
-//     return arr;
-//   }
-
-//   function fillHeapTable(arr){
-//     for (let i = 0; i < arr.length; i++) {
-//       for(let j = 0; j < i+1; j++) {
-//         if (j < i) {
-//           arr[i][j] = arr[i-1][j];
-//         } else {
-//           arr[i][j] = initialValues[j];
-//         }
-//       }
-//       heapify(i, arr);
-//     }
-//     return arr;
-//   }
-
-//   function heapify(row, table) {
-//     let index = row; // index of last added 
-//     let parentIndex = Math.floor((index-1)/2);
-
-//     // compare with parent and swap if needed
-//     while (parentIndex >= 0) {
-//       parentIndex = Math.floor((index-1)/2);
-//       if (table[row][parentIndex] < table[row][index]) {
-//         let temp = table[row][parentIndex];
-//         table[row][parentIndex] = table[row][index];
-//         table[row][index] = temp;
-//       }
-//       index = parentIndex;
-//     }
-//     return table;
-//   }
-//   return heapTable;
-// }
