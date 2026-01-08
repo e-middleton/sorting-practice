@@ -9,7 +9,8 @@ const HSGameBoard = () => {
     drop
   } = useHeapSort(6);
 
-  const {arrayValues, heapValues, swappedItems} = state;
+  const {arrayValues, heapValues, swappedItems, arrayLength, phase} = state;
+  const complete = arrayValues.length === arrayLength && phase==='SORT';
 
   return (
     <>
@@ -28,7 +29,7 @@ const HSGameBoard = () => {
                   onDragOver={e => e.preventDefault()}
                   onDrop={() => drop(i)}
                   className={`
-                    w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded 
+                    w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded md:text-4xl h-17 w-17 p-2 lg:text-4.5xl w-20 h-20
                     ${needsToSwap ? 'bg-red-400': ''}
                   `}
                   onDoubleClick={() => doubleClickTwo(i)}
@@ -39,13 +40,13 @@ const HSGameBoard = () => {
             })}
           </ul>
           {/* ARRAY VALUES */}
-          <ul className='mx-auto flex size-fit p-3 rounded-sm gap-1'>
+          <ul className={`mx-auto flex size-fit p-3 rounded-sm gap-1 ${complete ? "bg-green-200" : "bg-transparent"}`}>
             {arrayValues.map((value, i) => {
               return (
                 <li
                   key={i}
                   className={`
-                    w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded 
+                    w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded md:text-4xl h-17 w-17 p-2 lg:text-4.5xl w-20 h-20
                   `}
                   onDoubleClick = {() => doubleClick(i)}
                 >

@@ -19,12 +19,12 @@ const AlgorithmListing = ({algorithm}) => {
         </div>
 
         <div className='mb-4'>{ description }</div>
-        <button onClick={() => setShowFullDescription((prevState) => !prevState)} className='text-blue-500 mb-5 hover:text-blue-600'>
+        <button onClick={() => setShowFullDescription((prevState) => !prevState)} className='text-sky-500 mb-5 hover:text-sky-700'>
           {showFullDescription ? 'less' : 'more'}
         </button>
         <div className='border-b border-color-gray-600 mb-5'></div>
         <div className='flex justify-end'>
-          <Link to={`/practice-${algorithm.linkName}`} className='bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm'>
+          <Link to={`/practice-${algorithm.linkName}`} className='bg-button hover:bg-darkButton text-white px-4 py-2 rounded-lg text-center text-sm'>
             practice
           </Link>
         </div>

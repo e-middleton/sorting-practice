@@ -7,7 +7,7 @@ const HomePage = () => {
     <>
       <Hero />
       <AlgorithmListings homePage={true}/>
-      <ViewAllAlgorithms />
+      <ViewAllAlgorithms />   
     </>
   );
 }

@@ -3,4 +3,9 @@
 
 @theme {
   --font-roboto: 'Roboto', sans-serif;
+  --color-background: #CCE6D2;
+  --color-darkBlock: #366D43;
+  --color-lightBlock: #EEF7F0;
+  --color-button: #274F30;
+  --color-darkButton: #18301D;
 }

@@ -7,7 +7,7 @@ const NotFoundPage = () => {
       <FaExclamationTriangle className='text-yellow-300 text-6xl m-4'/>
       <h1 className='text-bold'>404 Error</h1>
       <h1 className='text-4xl text-bold mb-10'>Page Not Found</h1>
-      <Link to='/' className='max-w-3xl bg-gray-100 rounded-lg p-2 hover:bg-gray-200'>Return Home</Link>
+      <Link to='/' className='max-w-3xl bg-gray-200 rounded-lg p-2 hover:bg-gray-300 lg:text-xl'>Return Home</Link>
     </section>
   );
 }

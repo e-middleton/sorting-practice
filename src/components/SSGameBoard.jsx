@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import { useSelectionSort} from "../logic/useSelectionSort";
 
 const SSGameBoard = ({arrayLength = 5}) => {
@@ -12,8 +11,6 @@ const SSGameBoard = ({arrayLength = 5}) => {
     drop,
     undo
   } = useSelectionSort(arrayLength);
-
-  const [overIndex, setOverIndex] = useState(null);
 
   return (
     <>
@@ -31,13 +28,10 @@ const SSGameBoard = ({arrayLength = 5}) => {
                 onDragStart={() => setDragStartIndex(i)}
                 onDragOver={e => e.preventDefault()}
                 onDrop={() => drop(i)}
-                onDragEnter={() => setOverIndex(i)}
-                onDragLeave={() => setOverIndex(null)}
                 className={`
-                  w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded 
+                  w-15 h-15 p-1 text-3xl flex items-center justify-center border rounded md:text-4xl h-17 w-17 p-2 lg:text-4.5xl w-20 h-20
                   ${isSorted ? "bg-slate-300" : ""}              
                   ${isWrong ? "bg-red-400" : ""}
-                  ${overIndex === i && !complete? "ring-2 ring-blue-400" : ""}
                   ${locked && !isSorted ? "opacity-50" : ""}
                 `}
               >

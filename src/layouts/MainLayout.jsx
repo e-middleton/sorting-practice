@@ -4,8 +4,11 @@ import Navbar from '../components/Navbar';
 const MainLayout = () => {
   return (
     <>
-      <Navbar />
-      <Outlet/>
+      <section className='bg-lightBlock h-screen'>
+        <Navbar />
+        <Outlet/>
+      </section>
+      
     </> 
   );
 }
