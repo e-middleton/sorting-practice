@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import AlgorithmsPage from './pages/AlgorithmsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SelectionSortPage from './pages/SelectionSortPage';
+import HeapSortPage from './pages/HeapSortPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -11,6 +12,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />}/>
       <Route path='/algorithms' element={<AlgorithmsPage homepage='false'/>}/>
       <Route path='/practice-SelectionSort' element={<SelectionSortPage />}/>
+      <Route path='/practice-HeapSort' element={<HeapSortPage />}/>
       <Route path='*' element={<NotFoundPage/>}/>
     </Route>
   )
