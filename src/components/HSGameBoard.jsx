@@ -7,7 +7,7 @@ const HSGameBoard = () => {
     doubleClickTwo,
     setDragStartIndex,
     drop
-  } = useHeapSort(6);
+  } = useHeapSort(7);
 
   const {arrayValues, heapValues, swappedItems, arrayLength, phase} = state;
   const complete = arrayValues.length === arrayLength && phase==='SORT';

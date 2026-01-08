@@ -1,6 +1,6 @@
 import { useSelectionSort} from "../logic/useSelectionSort";
 
-const SSGameBoard = ({arrayLength = 5}) => {
+const SSGameBoard = ({arrayLength = 7}) => {
   const {
     values,
     steps,

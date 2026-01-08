@@ -6,7 +6,7 @@ const HeapSortPage = () => {
 
   let instructions = '';
   if (showInstructions) {
-    instructions = <div className='bg-gray-100 p-2 rounded-sm max-w-4xl lg:max-w-5xl'>
+    instructions = <div className='bg-gray-100 p-2 mb-4 rounded-sm max-w-4xl lg:max-w-5xl'>
         <p className='font-bold'>Phase 1 Heapify:</p>
         <p>Iterate across the array and add the elements one by one to the heap section of the array.</p>
         <p className='font-bold'>Phase 2 Sorting:</p>
@@ -18,6 +18,13 @@ const HeapSortPage = () => {
         <p className='italic'>Please note: The gap between the 'heap' and 'sorted' sections is for visual distinction only. They represent a single, continuous array in memory.</p>
       </div>
   }
+
+  let [seed, setSeed] = useState(0);
+
+  const resetArray = () => {
+    // Change the key to a new value (e.g., a random number or incremented counter)
+    setSeed(Math.random());
+  };
 
   return (
     <> 
@@ -33,9 +40,12 @@ const HeapSortPage = () => {
               {showInstructions ? 'Hide Instructions' : 'Show Instructions'}
             </button>
             <div>{instructions}</div>
+            <button onClick={resetArray} className='bg-gray-200 text-xl font-bold rounded-sm p-1 mb-5 hover:bg-gray-400'>
+              Refresh Array
+            </button>
           </div>
         </div>
-        <HSGameBoard />
+        <HSGameBoard key={seed}/>
       </div>
     </>
   );

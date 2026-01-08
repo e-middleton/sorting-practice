@@ -6,7 +6,7 @@ const HomePage = () => {
   return (
     <>
       <Hero />
-      <AlgorithmListings homePage={true}/>
+      <AlgorithmListings title='Available Algorithms' endpoints={[0,2]}/>
       <ViewAllAlgorithms />   
     </>
   );

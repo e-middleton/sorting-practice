@@ -7,7 +7,7 @@ const SelectionSortPage = () => {
   let instructions = '';
   const [showInstructions, setShowInstructions] = useState(false);
   if (showInstructions) {
-    instructions =  <div className='bg-gray-100 p-2 rounded-sm max-w-4xl lg:max-w-5xl'>
+    instructions =  <div className='bg-gray-100 p-2 mb-4 rounded-sm max-w-4xl lg:max-w-5xl'>
         <p>In selection sort, each pass involves iterating down the unsorted array and finding the smallest element.</p>
         <p className='pb-2'>Once that smallest element has been located in the unsorted part of the array, it is added as the last element of the sorted section.</p>
         <p>Array elements can be dragged using the mouse, once they have been added to the sorted section, they will be grayed out for visual clarity.</p>
@@ -15,6 +15,13 @@ const SelectionSortPage = () => {
         <p>The array element being dragged will swap positions with the old element in that index, so that there are no empty spaces in the array.</p>
       </div>
   }
+
+  let [seed, setSeed] = useState(0);
+
+  const resetArray = () => {
+    // Change the key to a new value (e.g., a random number or incremented counter)
+    setSeed(Math.random());
+  };
 
   return (
     <>  
@@ -30,9 +37,12 @@ const SelectionSortPage = () => {
               {showInstructions ? 'Hide Instructions' : 'Show Instructions'}
             </button>
             <div>{instructions}</div>
+            <button onClick={resetArray} className='bg-gray-200 text-xl font-bold rounded-sm p-1 mb-5 hover:bg-gray-400'>
+              Refresh Array
+            </button>
           </div>
         </div>
-        <SSGameBoard />
+        <SSGameBoard key={seed}/>
       </div>
     </>
   );
