@@ -122,11 +122,13 @@ export function useHeapSort(arrayLength=6) {
         wrongIndices.push(i);
       }
     }
+
     if (wrongIndices.length > 2) {
       if (state.phase===PHASE.BUILD) {
         wrongIndices.splice(0, wrongIndices.length-2);
       } else {
         wrongIndices.splice(2);
+        console.log(wrongIndices);
       }
     }
     return wrongIndices;
@@ -237,7 +239,12 @@ export function useHeapSort(arrayLength=6) {
     const heap = structuredClone(state.heapValues);
     [heap[from], heap[toIndex]] = [heap[toIndex], heap[from]];
 
-    checkHeap(heap);
+    if (state.phase === PHASE.BUILD) {
+      checkHeap(heap);
+    } else {
+      checkHeapTwo(heap);
+    }
+    
     dispatch({type : ACTION.CHECK_PHASE})
   }
 
