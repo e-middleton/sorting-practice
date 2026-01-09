@@ -128,7 +128,6 @@ export function useHeapSort(arrayLength=6) {
         wrongIndices.splice(0, wrongIndices.length-2);
       } else {
         wrongIndices.splice(2);
-        console.log(wrongIndices);
       }
     }
     return wrongIndices;
