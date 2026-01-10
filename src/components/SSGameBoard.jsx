@@ -2,15 +2,14 @@ import { useSelectionSort} from "../logic/useSelectionSort";
 
 const SSGameBoard = ({arrayLength = 7}) => {
   const {
-    values,
-    steps,
-    locked,
-    wrongIndices,
-    complete,
+    state,
     setDragStartIndex,
     drop,
     undo
   } = useSelectionSort(arrayLength);
+
+  const {values, steps, locked, wrongIndices} = state;
+  const complete = steps === arrayLength;
 
   return (
     <>
