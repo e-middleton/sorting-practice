@@ -124,6 +124,8 @@ export function useSelectionSort(arrayLength) {
    */
   function drop(toIndex) {
     const nextPair = findNextPair();
+    console.log(nextPair[0], nextPair[1]);
+    console.log(nextPair.includes(toIndex));
 
     if (state.locked || state.dragStartIndex === null) { // if locked is set to true, don't allow dragged items to drop
       return; 
