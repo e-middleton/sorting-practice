@@ -25,6 +25,7 @@ export function useSelectionSort(arrayLength) {
     SET_WRONG_INDICES: "SET_WRONG_INDICES",
     EMPTY_WRONG_INDICES: "EMPTY_WRONG_INDICES",
     INCREMENT_STEPS: "INCREMENT_STEPS",
+    UPDATE_NEXT_PAIR: "UPDATE_NEXT_PAIR",
     UNDO: "UNDO"
   }
 
@@ -100,16 +101,32 @@ export function useSelectionSort(arrayLength) {
     [state.values]
   );
 
+  function findNextPair() {
+    let correctIndex = state.steps;
+    let smallest = state.values[state.steps];
+    for (let i = state.steps; i < state.values.length; i++) {
+      if (state.values[i] < smallest) {
+        correctIndex = i;
+        smallest = state.values[i];
+      }
+    }
+    return [state.steps, correctIndex];
+  }
+
   /**
    * function to drop an element of the array that has been dragged
    * @param toIndex the ending index where it is being placed
    */
   function drop(toIndex) {
+    const nextPair = findNextPair();
+
     if (state.locked || state.dragStartIndex === null) { // if locked is set to true, don't allow dragged items to drop
       return; 
     }
     if (toIndex < state.steps || state.dragStartIndex < state.steps) return; // don't allow already sorted elements to move
     
+    if (!nextPair.includes(toIndex) || !nextPair.includes(state.dragStartIndex)) return;
+
     const from = state.dragStartIndex;
     dispatch({type: ACTION.SWAP, payload: {from: from, to: toIndex}});
 
