@@ -13,10 +13,15 @@ export function useSelectionSort(arrayLength) {
   const randomizedArray = (numVals) => {
     const randomArray = [];
     for (let i = 0; i < numVals; i++) {
-      randomArray[i] = Math.floor(Math.random() * 60); // gives an integer from 0 - 59
+      let temp = Math.floor(Math.random() * 60 + 1); // gives an integer from 1 - 60
+      // prevent duplicates
+      while (randomArray.includes(temp)){
+        temp = Math.floor(Math.random() * 60 + 1); 
+      }
+      randomArray[i] = temp;
     }
     return randomArray;
-  } 
+  }
 
   // ALL AVAILABLE ACTIONS
   const ACTION = {
