@@ -5,6 +5,7 @@ import AlgorithmsPage from './pages/AlgorithmsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SelectionSortPage from './pages/SelectionSortPage';
 import HeapSortPage from './pages/HeapSortPage';
+import InsertionSortPage from './pages/InsertionSortPage';
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -13,6 +14,7 @@ const router = createHashRouter(
       <Route path='/algorithms' element={<AlgorithmsPage homepage='false'/>}/>
       <Route path='/practice-SelectionSort' element={<SelectionSortPage />}/>
       <Route path='/practice-HeapSort' element={<HeapSortPage />}/>
+      <Route path='/practice-InsertionSort' element={<InsertionSortPage />}/>
       <Route path='*' element={<NotFoundPage/>}/>
     </Route>
   )
