@@ -1,4 +1,5 @@
 import ISGameBoard from "../components/ISGameBoard";
+import AlgorithmHeading from "../components/AlgorithmHeading";
 import {useState} from 'react';
 
 const InsertionSortPage = () => {
@@ -27,9 +28,7 @@ const InsertionSortPage = () => {
   return (
     <>  
       {/* heading */}
-      <div className='flex justify-center w-full mb-2 border-b border-button bg-lightBlock h-35 items-center'>
-        <h1 className='font-bold font-roboto text-darkBlock text-5xl'>Insertion Sort Practice</h1>
-      </div>
+      <AlgorithmHeading algorithmTitle={"Insertion Sort Practice"} />
       <div className='bg-white shadow-md mx-auto rounded-md max-w-7xl py-5'>
         <div className='flex flex-col justify-start'>
           <div className='px-10 pb-5 mb-5 py-1 rounded-sm max-w-7xl ml-20'>

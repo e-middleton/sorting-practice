@@ -1,4 +1,5 @@
 import HSGameBoard from "../components/HSGameBoard";
+import AlgorithmHeading from "../components/AlgorithmHeading";
 import {useState} from 'react';
 
 const HeapSortPage = () => {
@@ -29,9 +30,7 @@ const HeapSortPage = () => {
   return (
     <> 
       {/* heading */}
-      <div className='flex justify-center w-full mb-2 border-b border-button bg-lightBlock h-35 items-center'>
-        <h1 className='font-bold text-darkBlock text-5xl'>Heap Sort Practice</h1>
-      </div>
+      <AlgorithmHeading algorithmTitle={"Heap-Sort Practice"} />
       <div className='bg-white mt-5 shadow-md mx-auto rounded-md max-w-7xl py-5'>
         <div className='flex flex-col justify-start'>
           <div className='px-10 pb-5 mb-5 py-1 rounded-sm max-w-7xl ml-20'>
