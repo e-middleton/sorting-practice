@@ -29,7 +29,7 @@ const HeapSortPage = () => {
     <> 
       {/* heading */}
       <AlgorithmHeading algorithmTitle={"Heap-Sort Practice"} />
-      <div className='bg-white mt-5 shadow-md mx-auto rounded-md max-w-7xl py-2 my-5'>
+      <div className='bg-white mt-5 shadow-md mx-auto rounded-lg max-w-7xl py-2 my-5'>
         <div className='flex flex-col justify-start'>
           <div className='px-10 pb-5 mb-5 py-1 rounded-sm max-w-7xl ml-20'>
             <div>{instructions}</div>
