@@ -24,14 +24,14 @@
     "id": "4",
     "name": "QuickSort",
     "linkName": "QuickSort",
-    "description": "Choose a pivot and recursively sort the elements into two lists as smaller than pivot or larger than pivot.",
+    "description": "Choose a pivot and recursively sort the elements into two lists as smaller than pivot or larger than pivot. -- UNDER CONSTRUCTION -- ",
     "complexity": "O(nlog(n)) - log-linear time"
   },
   {
     "id": "5",
     "name": "Merge Sort",
     "linkName": "MergeSort",
-    "description": "Description of Merge Sort.",
+    "description": "Recursively divide the array into smaller arrays until they are one element large, then perform the order-preserving merge. -- UNDER CONSTRUCTION --",
     "complexity": "O(nlog(n)) - log-linear time"
   }
 ]
