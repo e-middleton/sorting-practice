@@ -4,7 +4,7 @@ const AboutPage = () => {
   const text = `
   Hello!
   My name is Emily, and I'm a CSC Major at Smith.
-  I took Data structures (CSC 210) in Fall of 2025, and I loved the class,
+  I took data structures (CSC 210) in Fall of 2025, and I loved the class,
   but I wished I had some hands-on practice for some of the algorithms.
   I made this website over winter break to try create some visualizations,
   ... and am still working on it. :( 
