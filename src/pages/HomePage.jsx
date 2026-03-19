@@ -20,7 +20,7 @@ const HomePage = () => {
       <section className='m-auto max-w-lg my-5'>
         <button onClick={() => setShowAll((prevState) => !prevState)} 
         className=' mx-auto flex w-2/3 items-center justify-center block h-15 bg-black rounded-xl hover:bg-gray-700'>
-          <div className='font-roboto text-white text-bold text-base text-center'>
+          <div className='font-roboto text-white font-bold text-base text-center'>
             {showAll ? "Hide Algorithms" : "Show All Algorithms" }
           </div>
         </button>
